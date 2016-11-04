@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.iroh.speech2health.MainActivity">
+    tools:context="com.example.iroh.speech2health.MainActivity"
+    android:id="@+id/backgroundRelativeLayoutMessagesFragment">
 
     <TextView
         android:layout_width="wrap_content"
@@ -14,9 +15,7 @@
         android:layout_alignBaseline="@+id/sendButtonMessagesFragment"
         android:layout_alignBottom="@+id/sendButtonMessagesFragment"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/sendButtonMessagesFragment"
-        android:layout_toStartOf="@+id/sendButtonMessagesFragment" />
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -24,7 +23,7 @@
         android:text="Send"
         android:id="@+id/sendButtonMessagesFragment"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="33dp"
+        android:layout_marginBottom="63dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
@@ -34,14 +33,20 @@
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/sendButtonMessagesFragment">
+        android:layout_above="@+id/sendButtonMessagesFragment"
+        android:id="@+id/relativeLayout">
 
         <ScrollView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/messageBoardScrollViewMessagesFragment"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true" >
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/messageBoardTableLayoutMessagesFragment"></TableLayout>
+        </ScrollView>
     </RelativeLayout>
 
 </RelativeLayout>

@@ -344,63 +344,6 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
                             return headers;
                         }
                         };
-
-                        /*
-                        //TODO:Process StringRequest if all of the parameters are filled in.
-                        StringRequest sr = new StringRequest(Request.Method.POST, "http://159.203.204.9/task_manager/v1/user/postFood", new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                //Toast.makeText(getActivity().getApplicationContext(), "Food item saved successfully", Toast.LENGTH_LONG).show();
-                    //if(response.contains("calorie")){
-                        //int index = response.indexOf("calorie");
-                        //+8 for length of calorie + 1 for the space
-                        //TODO: Why isn't this code showing up? probably because the response doesn't contain calorie
-                        //TODO: Implement this code later because users will want to see their immediate calorie intake
-                        //String temp = response.substring(index + 8);
-                        //mET.setText("index of calorie is " + index + "calvalue: " + temp);
-                    //}
-                                int startIndex = response.indexOf(":") + 1;
-                                int endIndex = response.indexOf("}");
-                                String result = response.substring(startIndex, endIndex);
-                                int calValue = Integer.valueOf(result) * Integer.valueOf(aiSize);
-
-                                //mET.append("\n\nTotal Calories: " + calValue);
-                                responseTextView.append("Great!\n" +
-                                        "Total Calories: " + calValue);
-                                //reset these back to null
-                                //TODO:is there a way i can reset the AI api? I don't want it to remember this query anymore
-                                aiFoodName = "";
-                                aiTime = "";
-                                aiSize = "";
-                                finalSubmission = "";
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                //Toast.makeText(getActivity().getApplicationContext(), "Error saving food item", Toast.LENGTH_LONG).show();
-                            }
-                        }){
-                            @Override
-                            protected Map<String,String> getParams(){
-                                Map<String, String> params = new HashMap<String, String>();
-                                params.put("input", finalSubmission);
-                                params.put("foodname", aiFoodName);
-                                return params;
-                            }
-
-                            @Override
-                            public Map<String, String> getHeaders() throws AuthFailureError {
-                                Map<String,String> headers = new HashMap<String, String>();
-                                headers.put("Content-Type","application/x-www-form-urlencoded");
-                                headers.put("Authorization", readID("userID"));
-                                //headers.put("Authorization", "205");
-                                return headers;
-                            }
-                        };
-
-                        queue.add(sr);
-                        */
-
                         queue.add(jor);
                     }
 
