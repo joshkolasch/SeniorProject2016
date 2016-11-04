@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/relativeLayoutRegister"
+    tools:context="com.example.iroh.speech2health.RegisterActivity">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:ems="10"
+        android:id="@+id/firstNameRegistrationText"
+        android:hint="First Name"
+        android:imeOptions="actionDone"
+        android:layout_above="@+id/emailRegistrationText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="66dp"
+        android:layout_marginStart="66dp"
+        android:width="110dp"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/lastNameRegistrationText"
+        android:hint="Last Name"
+        android:imeOptions="actionDone"
+        android:layout_above="@+id/emailRegistrationText"
+        android:layout_toRightOf="@+id/firstNameRegistrationText"
+        android:width="110dp"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/emailRegistrationText"
+        android:hint="Email"
+        android:imeOptions="actionDone"
+        android:layout_above="@+id/passwordRegistrationText"
+        android:layout_alignLeft="@+id/firstNameRegistrationText"
+        android:layout_alignStart="@+id/firstNameRegistrationText" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/passwordRegistrationText"
+        android:hint="Password"
+        android:imeOptions="actionDone"
+        android:layout_above="@+id/confirmPasswordRegistrationText"
+        android:layout_alignLeft="@+id/emailRegistrationText"
+        android:layout_alignStart="@+id/emailRegistrationText" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/confirmPasswordRegistrationText"
+        android:hint="Confirm Password"
+        android:imeOptions="actionDone"
+        android:layout_above="@+id/monthRegistrationText"
+        android:layout_alignLeft="@+id/passwordRegistrationText"
+        android:layout_alignStart="@+id/passwordRegistrationText" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/monthRegistrationText"
+        android:hint="MM"
+        android:maxLength="2"
+        android:imeOptions="actionDone"
+        android:layout_alignTop="@+id/yearRegistrationText"
+        android:layout_alignLeft="@+id/confirmPasswordRegistrationText"
+        android:layout_alignStart="@+id/confirmPasswordRegistrationText" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dayRegistrationText"
+        android:hint="DD"
+        android:maxLength="2"
+        android:imeOptions="actionDone"
+        android:layout_above="@+id/heightRegistrationText"
+        android:layout_toRightOf="@+id/monthRegistrationText"
+        android:layout_toEndOf="@+id/monthRegistrationText" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/yearRegistrationText"
+        android:hint="YYYY"
+        android:maxLength="4"
+        android:imeOptions="actionDone"
+        android:layout_alignTop="@+id/dayRegistrationText"
+        android:layout_toRightOf="@+id/dayRegistrationText"
+        android:layout_toEndOf="@+id/dayRegistrationText" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/heightRegistrationText"
+        android:hint="Height (Ft ' inch)"
+        android:imeOptions="actionDone"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="64dp"
+        android:layout_marginStart="64dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/weightRegistrationText"
+        android:hint="Weight (lbs)"
+        android:maxLength="4"
+        android:imeOptions="actionDone"
+        android:layout_below="@+id/heightRegistrationText"
+        android:layout_alignLeft="@+id/heightRegistrationText"
+        android:layout_alignStart="@+id/heightRegistrationText" />
+
+    <RadioGroup
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/radioGroup"
+        android:layout_below="@+id/weightRegistrationText"
+        android:layout_alignLeft="@+id/weightRegistrationText"
+        android:layout_alignStart="@+id/weightRegistrationText"
+        android:layout_alignRight="@+id/confirmPasswordRegistrationText"
+        android:layout_alignEnd="@+id/confirmPasswordRegistrationText">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Male"
+            android:onClick="onRadioButtonClicked"
+            android:id="@+id/maleRegistrationRadioButton"
+            android:checked="false" />
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Female"
+            android:onClick="onRadioButtonClicked"
+            android:id="@+id/femaleRegistrationRadioButton"
+            android:checked="false" />
+    </RadioGroup>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:id="@+id/submitRegistrationButton"
+        android:layout_marginTop="42dp"
+        android:layout_below="@+id/radioGroup"
+        android:layout_alignLeft="@+id/yearRegistrationText"
+        android:layout_alignStart="@+id/yearRegistrationText" />
+
+
+</RelativeLayout>
