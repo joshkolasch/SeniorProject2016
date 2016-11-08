@@ -133,8 +133,6 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
         relLayout = (RelativeLayout) mView.findViewById(R.id.relativeLayoutVoice);
         relLayout.setOnClickListener(this);
         btnSpeak.setOnClickListener(new View.OnClickListener() {
-
-
             @Override
             public void onClick(View v) {
                 //aiService.startListening();
@@ -178,13 +176,10 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
                         e.printStackTrace();
                     }
 
-
                     ArrayList<String> text = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
                     mET.setText(text.get(0));
-                    //startVolley(txtText.getText().toString());
-                    //Toast.makeText(this.getContext(), formattedDate, Toast.LENGTH_SHORT).show();
 
                     String mData = formattedDate + " " + mET.getText()  ;
                     try {
@@ -207,7 +202,6 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
                     mFileOutputStream = null;
                 }
 
-
                 break;
             }
 
@@ -217,6 +211,7 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
     //input is what the user spoke into the app == mET
     public void startVolley(final String input) {
 
+        //configuration for the API.ai account
         final AIConfiguration config = new AIConfiguration("b421b100a49248f1bd410b6570c23e72",
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
@@ -254,29 +249,16 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
                         }
                     }
 
-                    //String test;
-                    //test = result.getStringParameter("FoodNames");
-                    // Show results in TextView.
-
                     if(parameterString.contains("FoodNames")){
 
-                        /*int start = parameterString.indexOf("FoodNames,") + 12;
-                        int end = parameterString.indexOf("\"", start);
-                        aiFoodName = parameterString.substring(start, end);*/
                         aiFoodName = result.getStringParameter("FoodNames");
                     }
                     if(parameterString.contains("Size")){
 
-                        /*int start = parameterString.indexOf("Size,") + 7;
-                        int end = parameterString.indexOf("\"", start);
-                        aiSize = parameterString.substring(start, end);*/
                         aiSize = result.getStringParameter("Size");
                     }
                     if(parameterString.contains("Time")){
 
-                        /*int start = parameterString.indexOf("Time,") + 7;
-                        int end = parameterString.indexOf("\"", start);
-                        aiTime = parameterString.substring(start, end);*/
                         aiTime = result.getStringParameter("Time");
                     }
 
@@ -314,8 +296,6 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-
-                                //mET.append("\n\nTotal Calories: " + calValue);
 
                                 //reset these back to null
                                 //TODO:is there a way i can reset the AI api? I don't want it to remember this query anymore

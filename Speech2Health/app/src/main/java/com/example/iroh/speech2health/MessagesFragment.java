@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
@@ -52,7 +53,7 @@ public class MessagesFragment extends Fragment implements View.OnClickListener{
 
     private Button sendButton;
     //private ScrollView messageBoard;
-    private TextView message;
+    private EditText message;
     private RelativeLayout relativeLayout;
     private RequestQueue queue;
     private TableLayout messageBoard;
@@ -68,54 +69,204 @@ public class MessagesFragment extends Fragment implements View.OnClickListener{
         // Inflate the layout for this fragment
         final View mView = inflater.inflate(R.layout.fragment_messages, container, false);
 
-        relativeLayout = (RelativeLayout) mView.findViewById(R.id.backgroundRelativeLayoutMessagesFragment);
-        relativeLayout.setOnClickListener(this);
+        relativeLayout = (RelativeLayout) mView.findViewById(R.id.relativeLayoutMessagesFragment);
+        //relativeLayout.setOnClickListener(this);
         sendButton = (Button) mView.findViewById(R.id.sendButtonMessagesFragment);
         messageBoard = (TableLayout) mView.findViewById(R.id.messageBoardTableLayoutMessagesFragment);
+        message = (EditText) mView.findViewById(R.id.textViewMessageFragment);
+        messageBoard.setOnClickListener(this);
         //only initialize message when the user wants to send a message
         //the assumption is that the user will be reading messages more than they will be sending them
 
         queue = Volley.newRequestQueue(mView.getContext());
-        sendButton.setOnClickListener(this);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, "http://159.203.204.9/api/v1/user/getMessages", null, new Response.Listener<JSONObject>(){
+                if(message.getText().length() == 0 || message.getText().toString() == " "){
+                    return;
+                }
+
+                HashMap<String, String> params = new HashMap<String, String> ();
+                params.put("message", message.getText().toString());
+
+                JsonObjectRequest jorPostMessage = new JsonObjectRequest(Request.Method.POST, "http://159.203.204.9/api/v1/user/postMessage", new JSONObject(params), new Response.Listener<JSONObject>(){
+                    @Override
+                    public void onResponse(JSONObject response){
+                        String test = response.toString();
+                        messageBoard.removeAllViews();
+                        JsonObjectRequest jorGetMessage = new JsonObjectRequest(Request.Method.GET, "http://159.203.204.9/api/v1/user/getMessages", null, new Response.Listener<JSONObject>(){
+                            @Override
+                            public void onResponse(JSONObject response){
+                                //String test = response.toString();
+                                try {
+                                    //JSONObject jsonObject = response.getJSONObject("messages");
+                                    //TODO: Do stuff here
+                                    String patient = response.getString("clientName");
+                                    String previousName = " ";
+                                    JSONArray jsonArray = response.getJSONArray("messages");
+                                    for(int i = 0; i < jsonArray.length(); i++){
+                                        JSONObject jsonObj = jsonArray.getJSONObject(i);
+                                        String tempMessage = jsonObj.getString("message");
+                                        String tempSender = jsonObj.getString("sender");
+                                        String tempRecipient = jsonObj.getString("recipient");
+
+                                        TextView senderText = new TextView(mView.getContext());
+                                        if(tempSender.equals(previousName)){
+                                            senderText.setText(" ");
+                                        }
+                                        else {
+                                            senderText.setText(tempSender);
+                                        }
+
+                                        TextView dummy = new TextView(mView.getContext());
+                                        dummy.setText(" ");
+                                        TextView dummy2 = new TextView(mView.getContext());
+                                        dummy2.setText(" ");
+                                        TextView messageText = new TextView(mView.getContext());
+                                        messageText.setText(tempMessage);
+                                        messageText.setTextColor(Color.BLACK);
+                                        if(tempSender.equals(patient)){
+                                            messageText.setBackgroundColor(Color.CYAN);
+                                        }
+                                        else{
+                                            messageText.setBackgroundColor(Color.GREEN);
+                                        }
+
+                                        TableRow senderRow = new TableRow(mView.getContext());
+                                        if(tempSender.equals(patient)){
+                                            //the 1f and 2f refer to the weight of the object in the row
+                                            //1f will take up 1/total f's (in this case 3) and 2f will take 2/3 of the row space
+                                            senderRow.addView(dummy, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                                            senderRow.addView(senderText, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2f));
+                                        }
+                                        else {
+                                            senderRow.addView(senderText, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2f));
+                                            senderRow.addView(dummy, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                                        }
+                                        TableRow messageRow = new TableRow(mView.getContext());
+                                        if(tempSender.equals(patient)){
+
+                                            messageRow.addView(dummy2, new TableRow.LayoutParams(1, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                                            messageRow.addView(messageText, new TableRow.LayoutParams(1, TableRow.LayoutParams.WRAP_CONTENT, 2f));
+                                        }
+                                        else {
+                                            messageRow.addView(messageText, new TableRow.LayoutParams(1, TableRow.LayoutParams.WRAP_CONTENT, 2f));
+                                            messageRow.addView(dummy2, new TableRow.LayoutParams(1, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                                        }
+                                        messageBoard.addView(senderRow);
+                                        messageBoard.addView(messageRow);
+                                        previousName = tempSender;
+                                    }
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                String test2 = "error";
+                            }
+                        }){
+                            @Override
+                            public Map<String, String> getHeaders() throws AuthFailureError {
+                                Map<String, String> headers = new HashMap<String, String>();
+                                headers.put("Content-Type", "application/x-www-form-urlencoded");
+                                headers.put("Api-Key", readID("userID"));
+                                return headers;
+                            }
+                        };
+
+                        message.setText("");
+
+                        queue.add(jorGetMessage);
+                    }
+
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String test2 = "error";
+                    }
+
+                }){
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        Map<String, String> headers = new HashMap<String, String>();
+                        headers.put("Content-Type", "application/x-www-form-urlencoded");
+                        headers.put("Api-Key", readID("userID"));
+                        return headers;
+                    }
+                };
+
+                queue.add(jorPostMessage);
+
+            }
+        });
+
+        JsonObjectRequest jorGetMessage = new JsonObjectRequest(Request.Method.GET, "http://159.203.204.9/api/v1/user/getMessages", null, new Response.Listener<JSONObject>(){
             @Override
             public void onResponse(JSONObject response){
-                String test = response.toString();
-
+                //String test = response.toString();
                 try {
                     //JSONObject jsonObject = response.getJSONObject("messages");
                     //TODO: Do stuff here
+                    String patient = response.getString("clientName");
+                    String previousName = "";
                     JSONArray jsonArray = response.getJSONArray("messages");
                     for(int i = 0; i < jsonArray.length(); i++){
                         JSONObject jsonObj = jsonArray.getJSONObject(i);
                         String tempMessage = jsonObj.getString("message");
                         String tempSender = jsonObj.getString("sender");
                         String tempRecipient = jsonObj.getString("recipient");
+
                         TextView senderText = new TextView(mView.getContext());
-                        senderText.setText(tempSender);
-                        senderText.setTextColor(Color.BLUE);
+                        if(tempSender.equals(previousName)){
+                            senderText.setText(" ");
+                        }
+                        else {
+                            senderText.setText(tempSender);
+                        }
+
                         TextView dummy = new TextView(mView.getContext());
                         dummy.setText(" ");
                         TextView dummy2 = new TextView(mView.getContext());
                         dummy2.setText(" ");
                         TextView messageText = new TextView(mView.getContext());
                         messageText.setText(tempMessage);
-                        messageText.setTextColor(Color.GREEN);
-
-                        //messageBoard.setStretchAllColumns(true);
+                        messageText.setTextColor(Color.BLACK);
+                        if(tempSender.equals(patient)){
+                            messageText.setBackgroundColor(Color.CYAN);
+                        }
+                        else{
+                            messageText.setBackgroundColor(Color.GREEN);
+                        }
 
                         TableRow senderRow = new TableRow(mView.getContext());
-                        senderRow.addView(dummy, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-                        senderRow.addView(senderText, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                        if(tempSender.equals(patient)){
+                            //the 1f and 2f refer to the weight of the object in the row
+                            //1f will take up 1/total f's (in this case 3) and 2f will take 2/3 of the row space
+                            senderRow.addView(dummy, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                            senderRow.addView(senderText, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2f));
+                        }
+                        else {
+                            senderRow.addView(senderText, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2f));
+                            senderRow.addView(dummy, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                        }
                         TableRow messageRow = new TableRow(mView.getContext());
-                        messageRow.addView(dummy2, new TableRow.LayoutParams(1, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-                        messageRow.addView(messageText, new TableRow.LayoutParams(1, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                        if(tempSender.equals(patient)){
 
+                            messageRow.addView(dummy2, new TableRow.LayoutParams(1, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                            messageRow.addView(messageText, new TableRow.LayoutParams(1, TableRow.LayoutParams.WRAP_CONTENT, 2f));
+                        }
+                        else {
+                            messageRow.addView(messageText, new TableRow.LayoutParams(1, TableRow.LayoutParams.WRAP_CONTENT, 2f));
+                            messageRow.addView(dummy2, new TableRow.LayoutParams(1, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                        }
                         messageBoard.addView(senderRow);
                         messageBoard.addView(messageRow);
-                        //board.addView();
-
+                        previousName = tempSender;
                     }
 
                 } catch (JSONException e) {
@@ -128,7 +279,6 @@ public class MessagesFragment extends Fragment implements View.OnClickListener{
             public void onErrorResponse(VolleyError error) {
                 String test2 = "error";
             }
-
         }){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -139,9 +289,7 @@ public class MessagesFragment extends Fragment implements View.OnClickListener{
             }
         };
 
-
-        queue.add(jor);
-
+        queue.add(jorGetMessage);
 
         return mView;
     }
@@ -150,9 +298,7 @@ public class MessagesFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         switch(v.getId()){
-            case R.id.sendButtonMessagesFragment: SendMessage(v);
-                break;
-            case R.id.backgroundRelativeLayoutMessagesFragment: hideSoftKeyboard(v);
+            case R.id.messageBoardTableLayoutMessagesFragment: hideSoftKeyboard(v);
                 break;
         }
     }
@@ -190,49 +336,4 @@ public class MessagesFragment extends Fragment implements View.OnClickListener{
 
         return null;
     }
-
-    /*public JsonObjectRequest getMessages(ScrollView board, View view){
-        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, "http://159.203.204.9/api/v1/user/getMessages", null, new Response.Listener<JSONObject>(){
-            @Override
-            public void onResponse(JSONObject response){
-                String test = response.toString();
-
-                try {
-                    //JSONObject jsonObject = response.getJSONObject("messages");
-                    //TODO: Do stuff here
-                    JSONArray jsonArray = response.getJSONArray("messages");
-                    for(int i = 0; i < jsonArray.length(); i++){
-                        JSONObject jsonObj = jsonArray.getJSONObject(i);
-                        String tempMessage = jsonObj.getString("message");
-                        String tempSender = jsonObj.getString("sender");
-                        String tempRecipient = jsonObj.getString("recipient");
-                        TextView sender = new TextView(view.getContext());
-
-                        //board.addView();
-
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                String test2 = "error";
-            }
-
-        }){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/x-www-form-urlencoded");
-                headers.put("Api-Key", readID("userID"));
-                return headers;
-            }
-        };
-
-        return jor;
-    }*/
 }

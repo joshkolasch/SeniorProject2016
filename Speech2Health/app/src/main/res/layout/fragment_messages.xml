@@ -5,17 +5,19 @@
     tools:context="com.example.iroh.speech2health.MainActivity"
     android:id="@+id/backgroundRelativeLayoutMessagesFragment">
 
-    <TextView
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textViewMessageFragment"
         android:hint="Respond to Clinician"
-        android:text="This is for messaging"
         android:layout_gravity="bottom"
         android:layout_alignBaseline="@+id/sendButtonMessagesFragment"
         android:layout_alignBottom="@+id/sendButtonMessagesFragment"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/sendButtonMessagesFragment"
+        android:layout_toStartOf="@+id/sendButtonMessagesFragment"
+        android:inputType="textCapSentences"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -34,7 +36,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/sendButtonMessagesFragment"
-        android:id="@+id/relativeLayout">
+        android:id="@+id/relativeLayoutMessagesFragment">
 
         <ScrollView
             android:layout_width="fill_parent"
