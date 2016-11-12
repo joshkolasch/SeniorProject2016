@@ -18,8 +18,12 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.FileOutputStream;
 import java.util.HashMap;
@@ -96,22 +100,46 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         {
             return;
         }
+
+        //NOTE: this is for debugging purposes
+        /*HashMap<String, String> params = new HashMap<String, String>();
+        params.put("firstname", "josh");
+        params.put("lastname", "kol");
+        params.put("email", "j2@hotmail.com");
+        params.put("password", "1");
+        params.put("birthday", "1212-12-12");
+        params.put("height", "120");
+        params.put("weight", "130");
+        params.put("gender", "Male");
+        params.put("type", "client");
+        params.put("limit", "2000");*/
+
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("firstname", mFirstName.getText().toString());
+        params.put("lastname", mLastName.getText().toString());
+        params.put("password", mPassword.getText().toString());
+        params.put("email", mEmail.getText().toString());
+        params.put("birthday", mBirthday);
+        params.put("height", mHeight.getText().toString());
+        params.put("weight", mWeight.getText().toString());
+        params.put("gender", gender);
+        params.put("type", "client");
+        params.put("limit", "2000");
+
         //TODO:fix the test.substring. It's currently hardcoded for a 3 digit number. Dont expect that
         //param1 is type of method get/post/update, param2 can be replaced with a variable for which api to call, param3 is if it works, or if it didn't
-        StringRequest sr = new StringRequest(Request.Method.POST, "http://159.203.204.9/task_manager/v1/register", new Response.Listener<String>() {
+        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, "http://159.203.204.9/api/v1/register", new JSONObject(params), new Response.Listener<JSONObject>(){
             @Override
-            public void onResponse(String response) {
+            public void onResponse(JSONObject response) {
                 String test = response.toString();
-                if (test.contains("false")) {
-                    //TODO:substring is probably wrong in this case- don't hard code this
-                    //use string.index of
-                    //locate ":" to start + 1 or (pid + some #)
-                    //locate "," to end
-                    // call them int begin, end; instead of 7 and 9
-                    //substring(start, end) begins at start and stops at end - 1
-                    String variable = test.substring(7, 9);
-                    writeID(filename, test.substring(7, 9));
+
+                String apiKey = null;
+                try {
+                    apiKey = response.getString("api_key");
+                    writeID(filename, apiKey);
                     startIntent();
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {
@@ -124,47 +152,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         }){
             @Override
-            protected Map<String,String> getParams(){
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("firstname", mFirstName.getText().toString());
-                params.put("lastname", mLastName.getText().toString());
-                params.put("password", mPassword.getText().toString());
-                params.put("email", mEmail.getText().toString());
-                params.put("birthday", mBirthday);
-                params.put("height", mHeight.getText().toString());
-                params.put("weight", mWeight.getText().toString());
-                params.put("gender", gender);
-                params.put("type", "client");
-                return params;
-            }
-
-            /*@Override
-            protected Map<String,String> getParams(){
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("firstname", "josh");
-                params.put("lastname", "kol");
-                params.put("password", "123");
-                params.put("email", "j@j.com");
-                params.put("birthday", "1212-12-12");
-                params.put("height", "120");
-                params.put("weight", "130");
-                params.put("gender", "Male");
-                params.put("type", "client");
-                return params;
-            }*/
-
-            @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String,String> headers = new HashMap<String, String>();
-                headers.put("Content-Type","application/x-www-form-urlencoded");
+                headers.put("Content-Type","application/json");
                 return headers;
             }
         };
 
-        queue.add(sr);
-
-        //TODO: put a check here to make sure the user was registered and given an id
-        startIntent();
+        queue.add(jor);
     }
 
     @Override
@@ -286,6 +281,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
 
-    @Override
-    public void onBackPressed(){}
+    //@Override
+    //public void onBackPressed(){}
 }

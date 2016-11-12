@@ -9,9 +9,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,11 +48,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Button registerButton;
     private RequestQueue queue;
     private String filename;
+    private RelativeLayout relativeLayout;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayoutLogin);
         emailTextBox = (EditText) findViewById(R.id.email);
         passwordTextBox = (EditText) findViewById(R.id.password);
         errorTextBox = (TextView) findViewById(R.id.errorTextView);
@@ -60,9 +64,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         filename = "userID";
         loginButton.setOnClickListener(this);
         registerButton.setOnClickListener(this);
-
-
-
+        relativeLayout.setOnClickListener(this);
     }
 
     public void attemptLogin() {
@@ -112,51 +114,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         });
 
-
-
         queue.add(jor);
-
-
-        //old login stuff: http://159.203.204.9/task_manager/v1/login
-        /*StringRequest sr = new StringRequest(Request.Method.POST, "http://159.203.204.9/task_manager/v1/login", new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                String test = response.toString();
-                //TODO: make sure that test.substring(5) is correct
-                if (test.contains("true")) {
-                    writeID(filename, test.substring(5));
-                    startIntent();
-                } else if (test.equals("invalid credentials")){
-                    errorTextBox.setText("Invalid Credentials. Try Again");
-                    return;
-                }
-                else {
-                    errorTextBox.setText("Error with server. Please try again later");
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                errorTextBox.setText("Could not connect to server. Please try again");
-            }
-        }){
-            @Override
-            protected Map<String,String> getParams(){
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("email", emailTextBox.getText().toString());
-                params.put("password", passwordTextBox.getText().toString());
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String,String> headers = new HashMap<String, String>();
-                headers.put("Content-Type","application/x-www-form-urlencoded");
-                return headers;
-            }
-        };
-
-        queue.add(sr);*/
     }
 
     public void goToRegisterPage(){
@@ -168,6 +126,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.email_sign_in_button: attemptLogin();
                 break;
             case R.id.registerLoginButton: goToRegisterPage();
+                break;
+            case R.id.relativeLayoutLogin: hideSoftKeyboard(v);
                 break;
         }
     }
@@ -186,11 +146,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
     public void onBackPressed(){}
 
-
+    //Activities are NOT Fragments, they do not have getActivity() member functions
+    //that is why
+    public void hideSoftKeyboard(View v){
+        InputMethodManager imm = (InputMethodManager)
+                this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
 }

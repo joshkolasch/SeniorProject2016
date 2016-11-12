@@ -362,7 +362,7 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
             case R.id.submitVoiceButton: startVolley(mET.getText().toString());
                 break;
             case R.id.relativeLayoutVoice: hideSoftKeyboard(v);
-                //TODO: should there be a break here?
+                break;
         }
     }
 

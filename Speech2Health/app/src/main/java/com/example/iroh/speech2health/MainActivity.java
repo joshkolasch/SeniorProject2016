@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -129,9 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void logoutUser(){
         try {
-            FileOutputStream outStream = openFileOutput(filename, MODE_PRIVATE);
-            outStream.write(' ');
-            outStream.close();
+            deleteID(filename);
             Toast.makeText(getApplicationContext(), "User Logged Out", Toast.LENGTH_LONG).show();
             goToLoginPage();
         } catch (Exception e) {
@@ -156,6 +155,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed(){}
+
+    public void deleteID(String file_name){
+        try {
+            File file = new File(file_name);
+            file.delete();
+            Toast.makeText(getApplicationContext(), "Message Saved", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }
