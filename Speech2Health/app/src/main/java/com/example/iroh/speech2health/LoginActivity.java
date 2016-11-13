@@ -1,7 +1,7 @@
 package com.example.iroh.speech2health;
 
 /**
- * Created by Iroh on 10/3/2016.
+ * Created by Josh on 11/13/2016.
  */
 import android.content.Context;
 import android.content.Intent;
@@ -49,6 +49,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private RequestQueue queue;
     private String filename;
     private RelativeLayout relativeLayout;
+    private GlobalVariablesClass globalVariable;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +66,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         loginButton.setOnClickListener(this);
         registerButton.setOnClickListener(this);
         relativeLayout.setOnClickListener(this);
+        //globalVariable = GlobalVariablesClass.getInstance();
+
+        //GlobalVariablesClass globalVariable = (GlobalVariablesClass) getApplicationContext();
+        //globalVariable.setPatientFirstName("Josh");
     }
 
     public void attemptLogin() {
@@ -97,6 +102,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     if(error == "false")
                     {
                         writeID(filename, api_key);
+                        //set global variables
+                        globalVariable = GlobalVariablesClass.getInstance();
+                        globalVariable.setPatientFirstName(response.getString("firstname"));
+                        globalVariable.setPatientLastName(response.getString("lastname"));
+                        globalVariable.setPatientEmail(response.getString("email"));
+                        globalVariable.setPatientBirthday(response.getString("birthday"));
+                        globalVariable.setPatientGender(response.getString("gender"));
+                        globalVariable.setPatientHeight(response.getString("height"));
+                        globalVariable.setPatientWeight(response.getString("weight"));
+                        globalVariable.setPatientLimit(response.getString("limit"));
                         startIntent();
                     }
                 } catch (JSONException e) {

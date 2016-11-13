@@ -31,27 +31,28 @@ import java.util.Map;
 
 
 /**
- * Created by Iroh on 10/3/2016.
+ * Created by Josh on 11/13/2016.
  */
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
 
-    protected EditText mFirstName;
-    protected EditText mLastName;
-    protected EditText mEmail;
-    protected EditText mPassword;
-    protected EditText mConfirmPassword;
-    protected EditText mMonth;
-    protected EditText mDay;
-    protected EditText mYear;
-    protected EditText mHeight;
-    protected EditText mWeight;
-    protected RadioButton mMale;
-    protected RadioButton mFemale;
-    protected Button mSubmitButton;
-    protected RequestQueue queue;
-    protected String mBirthday;
-    protected String gender;
-    protected String filename;
+    private EditText mFirstName;
+    private EditText mLastName;
+    private EditText mEmail;
+    private EditText mPassword;
+    private EditText mConfirmPassword;
+    private EditText mMonth;
+    private EditText mDay;
+    private EditText mYear;
+    private EditText mHeight;
+    private EditText mWeight;
+    private RadioButton mMale;
+    private RadioButton mFemale;
+    private Button mSubmitButton;
+    private RequestQueue queue;
+    private String mBirthday;
+    private String gender;
+    private String filename;
+    private GlobalVariablesClass globalVariable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,18 +81,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         /*Attempt to hide the keyboard when clicking out of the EditText boxes*/
         RelativeLayout mRelLay = (RelativeLayout) findViewById(R.id.relativeLayoutRegister);
         mRelLay.setOnClickListener(this);
-        /*
-        View v = findViewById(R.id.myView);
-        InputMethodManager imm = (InputMethodManager)
-        getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mFirstName.getWindowToken(), 0);*/
 
 
     }
 
-    private void postData() {
+    public void postData() {
         /*Do all the logic for the variables here*/
-        /*create a function to do all the checking for the variables right here*/
+        /*TODO:create a function to do all the checking for the variables right here*/
 
         mBirthday = mYear.getText().toString() + "-" + mMonth.getText().toString() + "-" + mDay.getText().toString();
 
@@ -100,6 +96,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         {
             return;
         }
+
 
         //NOTE: this is for debugging purposes
         /*HashMap<String, String> params = new HashMap<String, String>();
@@ -135,9 +132,22 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                 String apiKey = null;
                 try {
-                    apiKey = response.getString("api_key");
-                    writeID(filename, apiKey);
-                    startIntent();
+                    if(response.getString("error") == "false"){
+
+                        apiKey = response.getString("api_key");
+                        writeID(filename, apiKey);
+                        //set global variables
+                        globalVariable = GlobalVariablesClass.getInstance();
+                        globalVariable.setPatientFirstName(response.getString("firstname"));
+                        globalVariable.setPatientLastName(response.getString("lastname"));
+                        globalVariable.setPatientEmail(response.getString("email"));
+                        globalVariable.setPatientBirthday(response.getString("birthday"));
+                        globalVariable.setPatientGender(response.getString("gender"));
+                        globalVariable.setPatientHeight(response.getString("height"));
+                        globalVariable.setPatientWeight(response.getString("weight"));
+                        globalVariable.setPatientLimit(response.getString("limit"));
+                        startIntent();
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -188,7 +198,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private Boolean validateInput(){
+    public Boolean validateInput(){
         Boolean flag = true;
         //were any of the variables not entered
         if(mFirstName.getText().toString() == null)
@@ -281,6 +291,4 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
 
-    //@Override
-    //public void onBackPressed(){}
 }

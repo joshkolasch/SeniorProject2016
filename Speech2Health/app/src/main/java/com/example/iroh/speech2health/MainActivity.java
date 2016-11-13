@@ -50,12 +50,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //getSupportActionBar().setDisplayUseLogoEnabled(true);
     }
 
-    //@Override
-   /* public boolean OnCreateOptionsMenu(Menu menu){
-        //add items to the action bar
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }*/
 
     private void setupViewPager(ViewPager viewPager){
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());

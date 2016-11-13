@@ -96,21 +96,22 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
     private String aiTime;
     private String finalSubmission;
 
+    private GlobalVariablesClass globalVariable = GlobalVariablesClass.getInstance();
+
     //private AIService aiService;
 // Now formattedDate have current date/time
 
     protected Button submitButton;
     private String filename;
 
+    // Required empty public constructor
     public DiaryFragment() {
-        // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -122,7 +123,6 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
         sDirectory.mkdirs();
         //TODO: Note-> this was changed to this.getContext()
         queue = Volley.newRequestQueue(this.getContext());
-        //txtText = (TextView) findViewById(R.id.txtText);
         mET = (EditText) mView.findViewById(R.id.submissionVoiceText);
         responseTextView = (TextView) mView.findViewById(R.id.responseMessageVoiceText);
         filename = "userID";
@@ -143,7 +143,6 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
 
                 try {
                     startActivityForResult(intent, RESULT_SPEECH);
-                    //mET.setText("");
                 } catch (ActivityNotFoundException a) {
                     /*Toast t = Toast.makeText(v.getContext(),
                             "Opps! Your device doesn't support Speech to Text",

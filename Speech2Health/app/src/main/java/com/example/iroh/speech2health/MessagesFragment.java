@@ -41,7 +41,7 @@ import java.util.HashMap;
 import java.util.Map;
 //import info.androidhive.materialtabs.R;
 /**
- * Created by Iroh on 9/30/2016.
+ * Created by Josh on 9/30/2016.
  *
  * HomeFragment.java
  */
