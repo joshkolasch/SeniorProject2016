@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-
     class ViewPagerAdapter extends FragmentPagerAdapter{
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
@@ -97,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    //The xml file corresponding to the Menu is under /res/menu/menu_main.xml
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -137,15 +137,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
     }
 
+    public void goToMyAccount(){
+        Intent intent = new Intent(this, MyAccountMenu.class);
+        startActivity(intent);
+    }
+
     public void goToSettingsPage(){
         Intent intent = new Intent(this, SettingsMenu.class);
         startActivity(intent);
     }
 
-    public void goToMyAccount(){
-        Intent intent = new Intent(this, MyAccountMenu.class);
-        startActivity(intent);
-    }
 
     @Override
     public void onBackPressed(){}
@@ -154,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         try {
             File file = new File(file_name);
             file.delete();
-            Toast.makeText(getApplicationContext(), "Message Saved", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "User Logged Out", Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -123,7 +123,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         params.put("type", "client");
         params.put("limit", "2000");
 
-        //TODO:fix the test.substring. It's currently hardcoded for a 3 digit number. Dont expect that
         //param1 is type of method get/post/update, param2 can be replaced with a variable for which api to call, param3 is if it works, or if it didn't
         JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, "http://159.203.204.9/api/v1/register", new JSONObject(params), new Response.Listener<JSONObject>(){
             @Override

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
  */
 import android.content.Intent;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -38,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ProgressFragment extends Fragment implements View.OnClickListener{
@@ -47,7 +49,6 @@ public class ProgressFragment extends Fragment implements View.OnClickListener{
     }
 
     protected JSONObject job;
-    //protected String id = "205";//TODO:read this variable from the core data inside the onCreate function
     protected RequestQueue queue;
     protected String mOutput;
     protected String temp;
@@ -57,6 +58,11 @@ public class ProgressFragment extends Fragment implements View.OnClickListener{
     private Button refreshButton;
     private TableLayout mprogressTable;
 
+    //ExpandableListView stuff
+    ExpandableListAdapter listAdapter;
+    ExpandableListView expListView;
+    List<String> listDataHeader;
+    HashMap<String, List<String>> listDataChild;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,47 +72,110 @@ public class ProgressFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
+        // Inflate the layout for this fragment
         final View mview = inflater.inflate(R.layout.fragment_progress, container, false);
 
         queue = Volley.newRequestQueue(this.getContext());
-        //outputTextView = (TextView) mview.findViewById(R.id.outputProfileText);
         mprogressTable = (TableLayout) mview.findViewById(R.id.tableLayoutProgressFragment);
         refreshButton = (Button) mview.findViewById(R.id.refreshButtonProgressFragment);
+        
+        // get the listview
+        expListView = (ExpandableListView) mview.findViewById(R.id.expandableListViewProgressFragment);
+
+        // preparing list data
+        prepareListData();
+
+        listAdapter = new ExpandableListAdapter(getContext(), listDataHeader, listDataChild);
+
+        // setting list adapter
+        expListView.setAdapter(listAdapter);
+        expListView.bringToFront();
+
+        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                String parentHeader = listDataHeader.get(groupPosition);
+                String childHeader = listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition);
+
+                listDataHeader.remove(0);
+                listDataChild.remove(parentHeader);
+
+                // Adding child data
+                listDataHeader.add(childHeader);
+
+                // Adding child data
+                List<String> nutrients = new ArrayList<String>();
+                nutrients.add("Calories");
+                nutrients.add("Carbs");
+                nutrients.add("Proteins");
+                nutrients.add("Lipids");
+
+                listDataChild.put(listDataHeader.get(0), nutrients); // Header, Child data
+
+                expListView.collapseGroup(0);
+                return false;
+            }
+        });
+
+        //expListView.bringChildToFront();
+
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mprogressTable.removeAllViews();
 
-                //TODO:Set up my own scrollview class and set it's max height so it doesn't bleed into the button
-                JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, "http://159.203.204.9/api/v1/user/getFood", null, new Response.Listener<JSONObject>(){
+                JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, "http://159.203.204.9/api/v1/user/getFood", null, new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(JSONObject response){
+                    public void onResponse(JSONObject response) {
                         //String test = response.toString();
                         String result;
+
+                        //parentHeader will contain calories, lipid, carbs, or proteins
+                        //this will be used to parse that particular nutritional value from the received json
+                        String parentHeader = listDataHeader.get(0);
+                        parentHeader = parentHeader.toLowerCase();
+                        if(parentHeader.equals("carbs")){
+                            parentHeader = "carbohydrate";
+                        }
+                        else{
+                            //my listView variable names have an 's' at the end, the json variables don't contain it
+                            parentHeader = parentHeader.substring(0, parentHeader.length() -1);
+                        }
 
                         result = response.toString();
                         //outputTextView.setText(result);
                         try {
+                            //API sends JSONArray called 'food' with 'name', 'calorie', and 'ctime' attached (JSONObjects)
                             JSONArray jsonArray = response.getJSONArray("food");
-                            for(int i = 0; i < jsonArray.length(); i++){
+                            for (int i = 0; i < jsonArray.length(); i++) {
+
                                 JSONObject jsonObj = jsonArray.getJSONObject(i);
-                                //String blah = "2";
+
                                 TextView col1 = new TextView(mview.getContext());
                                 TextView col2 = new TextView(mview.getContext());
                                 TextView col3 = new TextView(mview.getContext());
+
+                                //TODO:Modify Progress page to display calories or proteins or other additional nutrient information (fats, sugars...)
+                                //String modifiedTime = jsonObj.getString("ctime");
                                 TableRow row = new TableRow(mview.getContext());
-                                col1.setText("    " + jsonObj.getString("name") + "            ");
-                                col2.setText(jsonObj.getString("calorie") + "             ");
+
+                                //TODO:make the columns have weights like i did in MessagesFragment
+                                col1.setText("    " + jsonObj.getString("name") + "                  ");
+                                if(jsonObj.getString(parentHeader) == "null"){
+                                    col2.setText("???" + "             ");
+                                }
+                                else {
+                                    col2.setText(jsonObj.getString(parentHeader) + "             ");
+                                }
                                 col3.setText(jsonObj.getString("ctime"));
+
                                 row.addView(col1);
                                 row.addView(col2);
                                 row.addView(col3);
                                 mprogressTable.addView(row);
                             }
-                        }
-                        catch(JSONException e){
+                        } catch (JSONException e) {
                             //something went wrong
                         }
                     }
@@ -116,7 +185,7 @@ public class ProgressFragment extends Fragment implements View.OnClickListener{
                         //TODO: insert some sort of an error response to the user
                     }
 
-                }){
+                }) {
                     @Override
                     public Map<String, String> getHeaders() throws AuthFailureError {
                         Map<String, String> headers = new HashMap<String, String>();
@@ -161,5 +230,23 @@ public class ProgressFragment extends Fragment implements View.OnClickListener{
 
     public void onClick(View v){}
 
+
+    //initializes ExpandableListView values
+    private void prepareListData() {
+        listDataHeader = new ArrayList<String>();
+        listDataChild = new HashMap<String, List<String>>();
+
+        // Adding child data
+        listDataHeader.add("Calories");
+
+        // Adding child data
+        List<String> nutrients = new ArrayList<String>();
+        nutrients.add("Calories");
+        nutrients.add("Carbs");
+        nutrients.add("Proteins");
+        nutrients.add("Lipids");
+
+        listDataChild.put(listDataHeader.get(0), nutrients); // Header, Child data
+    }
 
 }

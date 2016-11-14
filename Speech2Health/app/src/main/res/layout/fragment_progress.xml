@@ -4,17 +4,7 @@
     android:layout_height="match_parent"
     tools:context="com.example.iroh.speech2health.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Food"
-        android:id="@+id/foodProfileText"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="19dp"
-        android:layout_marginStart="19dp" />
-
+    <!--
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,23 +15,47 @@
         android:layout_alignTop="@+id/foodProfileText"
         android:layout_toRightOf="@+id/foodProfileText"
         android:layout_toEndOf="@+id/foodProfileText" />
+        -->
+    <ExpandableListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/expandableListViewProgressFragment"
+        android:layout_toRightOf="@+id/foodTextViewProgressFragment"
+        android:layout_marginLeft="39dp"
+        android:layout_marginStart="39dp"
+        android:layout_alignRight="@+id/refreshButtonProgressFragment"
+        android:layout_alignEnd="@+id/refreshButtonProgressFragment"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="   Food"
+        android:id="@+id/foodTextViewProgressFragment"
+        android:background="#FFFFFF"
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:text="Time"
-        android:id="@+id/timeProfileText"
+        android:id="@+id/textView8"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_toEndOf="@+id/expandableListViewProgressFragment"
+        android:background="#FFFFFF"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:layout_toRightOf="@+id/expandableListViewProgressFragment" />
 
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/scrollView"
-        android:layout_below="@+id/foodProfileText"
+        android:layout_marginTop="36dp"
+        android:layout_below="@+id/foodTextViewProgressFragment"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="15dp">
+        android:layout_above="@+id/refreshButtonProgressFragment">
 
         <!--<TextView
             android:layout_width="fill_parent"
@@ -68,4 +82,12 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="69dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_alignTop="@+id/refreshButtonProgressFragment"></RelativeLayout>
+
 </RelativeLayout>

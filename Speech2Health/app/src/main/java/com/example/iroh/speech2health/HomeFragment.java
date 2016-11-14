@@ -40,7 +40,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Created by Iroh on 9/30/2016.
+ * Created by Josh on 9/30/2016.
  *
  * HomeFragment.java
  *
@@ -171,12 +171,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         }
         };
 
-
-
         queue.add(jor);
-
-
-
 
         // Inflate the layout for this fragment
         return mv;
