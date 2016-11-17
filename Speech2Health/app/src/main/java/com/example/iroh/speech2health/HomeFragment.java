@@ -40,7 +40,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Created by Josh on 9/30/2016.
+ * Updated by Josh on 11/17/2016.
  *
  * HomeFragment.java
  *
@@ -56,12 +56,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     private TextView tview;
-    private int currentCalorieConsumption;
     private ProgressBar mProgressbar;
     private double percentage;
-    private double value;
-    private double calorieLimit;
-    private TextView maxCalorieText;
     private ProgressBar mProgressExceededBar;
     private ProgressBar mProgressBarBackground;
     private ProgressBar mProgressBarExceededBackground;
@@ -80,22 +76,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View mv =  inflater.inflate(R.layout.fragment_home, container, false);
         tview = (TextView) mv.findViewById(R.id.currentCaloriesHomeFragment);
-        maxCalorieText = (TextView) mv.findViewById(R.id.maxCalorieText);
-        //TODO: change calorieLimit to be set to the user's information
-        calorieLimit = 2000;
-        maxCalorieText.setText(Integer.toString((int)calorieLimit));
         mProgressBarBackground = (ProgressBar) mv.findViewById(R.id.progressBackground);
         mProgressBarExceededBackground = (ProgressBar) mv.findViewById(R.id.progressExceededBackground);
         mRelativeLayout = (RelativeLayout) mv.findViewById(R.id.relativeLayoutHomeFragment);
         queue = Volley.newRequestQueue(mv.getContext());
 
-        //value = Double.parseDouble(eText.getText().toString());
-        //percentage = (value/calorieLimit) *100;
-        //String.format for printing percentage with 2 decimal places
-        //tview.setText(String.format("%.2f", percentage) + "%");
+        final GlobalVariablesClass globalVariable = GlobalVariablesClass.getInstance();
 
         mProgressbar = (ProgressBar) mv.findViewById(R.id.circle_progress_bar);
-        //mProgressbar.setProgress((int) percentage);
         mProgressExceededBar = (ProgressBar) mv.findViewById(R.id.circle_progress_bar_exceeded);
 
         mRelativeLayout.setOnClickListener(this);
@@ -106,11 +94,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         params.put("startTime", startTime);
         params.put("endTime", startTime);
 
-
         JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, "http://159.203.204.9/api/v1/user/getTodaysCals", new JSONObject(params), new Response.Listener<JSONObject>(){
             @Override
             public void onResponse(JSONObject response){
                 Integer cal_value = 0;
+                String limit = globalVariable.getPatientLimit();
 
                 try {
                     JSONArray jsonArray = response.getJSONArray("food");
@@ -124,12 +112,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     //something went wrong
                 }
 
-                //value = Double.parseDouble(eText.getText().toString());
-                //eText.setText(cal_value.toString());
-                tview.setText(cal_value.toString());
+                tview.setText(cal_value.toString() + " / " + limit);
                 //TODO:Make sure doubleValue returns cal_value as a double
-                percentage = (cal_value.doubleValue() / calorieLimit) * 100;
-                //tview.setText(Integer.toString((int)percentage));
+                percentage = (cal_value.doubleValue() / Integer.parseInt(limit)) * 100;
+
+                //NOTE: there are 2 overlapping progress bars
+                // one for when the patient is under their limit and one for when the user exceeds their limit
+
                 //Logic for progress bar when user consumes more calories than their daily limit
                 if (percentage > 100) {
                     mProgressExceededBar.setProgress((int) (percentage - 100));
@@ -137,7 +126,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     mProgressExceededBar.setVisibility(View.VISIBLE);
                     mProgressBarBackground.setVisibility(View.INVISIBLE);
                     mProgressBarExceededBackground.setVisibility(View.VISIBLE);
-                    //TODO:Make current calories appears as RED text
+                    //Make current calories appears as RED text
                     tview.setTextColor(Color.RED);
                 }
                 //Logic for progress bar when the user is still under their limit
@@ -147,18 +136,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     mProgressbar.setVisibility(View.VISIBLE);
                     mProgressBarBackground.setVisibility(View.VISIBLE);
                     mProgressBarExceededBackground.setVisibility(View.INVISIBLE);
-                    //TODO:Make sure current calories appears as BLACK text
+                    //Make current calories appears as BLACK text
                     tview.setTextColor(Color.BLACK);
                 }
-
-
             }
-
 
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                String test2 = "error";
+                //String test2 = "error";
             }
 
         }){

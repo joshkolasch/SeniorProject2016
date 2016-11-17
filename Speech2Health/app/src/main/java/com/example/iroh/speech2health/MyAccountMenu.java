@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 /**
  * Created by Josh on 11/13/2016.
+ *
+ * MyAccountMenu.java
  */
 public class MyAccountMenu extends Activity implements View.OnClickListener{
 
@@ -41,7 +43,6 @@ public class MyAccountMenu extends Activity implements View.OnClickListener{
 
         changePasswordButton.setOnClickListener(this);
         relativeLayout.setOnClickListener(this);
-
     }
 
     @Override

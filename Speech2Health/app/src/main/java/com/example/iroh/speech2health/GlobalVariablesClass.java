@@ -13,13 +13,13 @@ public class GlobalVariablesClass extends Application {
 
     private static GlobalVariablesClass instance;
     private static String patientFirstName;
-    private String patientLastName;
-    private String patientHeight;
-    private String patientWeight;
-    private String patientEmail;
-    private String patientLimit;
-    private String patientBirthday;
-    private String patientGender;
+    private static String patientLastName;
+    private static String patientHeight;
+    private static String patientWeight;
+    private static String patientEmail;
+    private static String patientLimit;
+    private static String patientBirthday;
+    private static String patientGender;
 
     private GlobalVariablesClass(){}
 

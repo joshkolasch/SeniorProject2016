@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.content.Intent;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -42,19 +44,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Updated by Josh on 11/17/2016.
+ *
+ * ProgressFragment.java
+ *
+ */
 public class ProgressFragment extends Fragment implements View.OnClickListener{
 
     public ProgressFragment() {
         // Required empty public constructor
     }
 
-    protected JSONObject job;
     protected RequestQueue queue;
-    protected String mOutput;
-    protected String temp;
-    protected String[] tokens;
-    //protected TextView outputTextView;
-    protected String test;
     private Button refreshButton;
     private TableLayout mprogressTable;
 
@@ -63,6 +65,9 @@ public class ProgressFragment extends Fragment implements View.OnClickListener{
     ExpandableListView expListView;
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
+
+    private RelativeLayout relativeLayout;
+    private ScrollView scrollView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,10 +81,9 @@ public class ProgressFragment extends Fragment implements View.OnClickListener{
         // Inflate the layout for this fragment
         final View mview = inflater.inflate(R.layout.fragment_progress, container, false);
 
-        queue = Volley.newRequestQueue(this.getContext());
         mprogressTable = (TableLayout) mview.findViewById(R.id.tableLayoutProgressFragment);
         refreshButton = (Button) mview.findViewById(R.id.refreshButtonProgressFragment);
-        
+
         // get the listview
         expListView = (ExpandableListView) mview.findViewById(R.id.expandableListViewProgressFragment);
 
@@ -90,11 +94,38 @@ public class ProgressFragment extends Fragment implements View.OnClickListener{
 
         // setting list adapter
         expListView.setAdapter(listAdapter);
+        //display list on top of scrollview
         expListView.bringToFront();
+
+        /*scrollView = (ScrollView) mview.findViewById(R.id.scrollViewProgressFragment);
+        scrollView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                expListView.collapseGroup(0);
+            }
+        });*/
+
+        //TODO: make the list collapse when anything other than itself is touched
+        mprogressTable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                expListView.collapseGroup(0);
+            }
+        });
+
+        relativeLayout = (RelativeLayout) mview.findViewById(R.id.relativeLayoutProgressFragment);
+        relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                expListView.collapseGroup(0);
+            }
+        });
 
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                //parentHeader is the item displayed at the top of the list (not inside the dropdown)
+                //childHeader is the item that the user clicked from the dropdown
                 String parentHeader = listDataHeader.get(groupPosition);
                 String childHeader = listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition);
 
@@ -114,97 +145,31 @@ public class ProgressFragment extends Fragment implements View.OnClickListener{
                 listDataChild.put(listDataHeader.get(0), nutrients); // Header, Child data
 
                 expListView.collapseGroup(0);
+
+                loadProgress(mview);
+
                 return false;
             }
         });
+
+        loadProgress(mview);
 
         //expListView.bringChildToFront();
 
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mprogressTable.removeAllViews();
+                loadProgress(mview);
 
-                JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, "http://159.203.204.9/api/v1/user/getFood", null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        //String test = response.toString();
-                        String result;
 
-                        //parentHeader will contain calories, lipid, carbs, or proteins
-                        //this will be used to parse that particular nutritional value from the received json
-                        String parentHeader = listDataHeader.get(0);
-                        parentHeader = parentHeader.toLowerCase();
-                        if(parentHeader.equals("carbs")){
-                            parentHeader = "carbohydrate";
-                        }
-                        else{
-                            //my listView variable names have an 's' at the end, the json variables don't contain it
-                            parentHeader = parentHeader.substring(0, parentHeader.length() -1);
-                        }
-
-                        result = response.toString();
-                        //outputTextView.setText(result);
-                        try {
-                            //API sends JSONArray called 'food' with 'name', 'calorie', and 'ctime' attached (JSONObjects)
-                            JSONArray jsonArray = response.getJSONArray("food");
-                            for (int i = 0; i < jsonArray.length(); i++) {
-
-                                JSONObject jsonObj = jsonArray.getJSONObject(i);
-
-                                TextView col1 = new TextView(mview.getContext());
-                                TextView col2 = new TextView(mview.getContext());
-                                TextView col3 = new TextView(mview.getContext());
-
-                                //TODO:Modify Progress page to display calories or proteins or other additional nutrient information (fats, sugars...)
-                                //String modifiedTime = jsonObj.getString("ctime");
-                                TableRow row = new TableRow(mview.getContext());
-
-                                //TODO:make the columns have weights like i did in MessagesFragment
-                                col1.setText("    " + jsonObj.getString("name") + "                  ");
-                                if(jsonObj.getString(parentHeader) == "null"){
-                                    col2.setText("???" + "             ");
-                                }
-                                else {
-                                    col2.setText(jsonObj.getString(parentHeader) + "             ");
-                                }
-                                col3.setText(jsonObj.getString("ctime"));
-
-                                row.addView(col1);
-                                row.addView(col2);
-                                row.addView(col3);
-                                mprogressTable.addView(row);
-                            }
-                        } catch (JSONException e) {
-                            //something went wrong
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        //TODO: insert some sort of an error response to the user
-                    }
-
-                }) {
-                    @Override
-                    public Map<String, String> getHeaders() throws AuthFailureError {
-                        Map<String, String> headers = new HashMap<String, String>();
-                        headers.put("Content-Type", "application/x-www-form-urlencoded");
-                        headers.put("Api-Key", readID("userID"));
-                        return headers;
-                    }
-                };
-
-                queue.add(jor);
             }
         });
 
         return mview;
     }
 
-
-
-
+    //reads the stored api_key
+    //used for making api calls
     public String readID(String file_name) {
         try {
             String Message;
@@ -247,6 +212,81 @@ public class ProgressFragment extends Fragment implements View.OnClickListener{
         nutrients.add("Lipids");
 
         listDataChild.put(listDataHeader.get(0), nutrients); // Header, Child data
+    }
+
+    private void loadProgress(final View view) {
+
+        queue = Volley.newRequestQueue(this.getContext());
+        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, "http://159.203.204.9/api/v1/user/getFood", null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                //String test = response.toString();
+                String result;
+                mprogressTable.removeAllViews();
+
+                //parentHeader will contain calories, lipid, carbs, or proteins
+                //this will be used to parse that particular nutritional value from the received json
+                String parentHeader = listDataHeader.get(0);
+                parentHeader = parentHeader.toLowerCase();
+                if (parentHeader.equals("carbs")) {
+                    parentHeader = "carbohydrate";
+                } else {
+                    //my listView variable names have an 's' at the end, the json variables don't contain it
+                    parentHeader = parentHeader.substring(0, parentHeader.length() - 1);
+                }
+
+                result = response.toString();
+                //outputTextView.setText(result);
+                try {
+                    //API sends JSONArray called 'food' with 'name', 'calorie', and 'ctime' attached (JSONObjects)
+                    JSONArray jsonArray = response.getJSONArray("food");
+                    for (int i = jsonArray.length() - 1; i > -1; i--) {
+
+                        JSONObject jsonObj = jsonArray.getJSONObject(i);
+
+                        TextView col1 = new TextView(view.getContext());
+                        TextView col2 = new TextView(view.getContext());
+                        TextView col3 = new TextView(view.getContext());
+
+                        //TODO:Modify Progress page to display calories or proteins or other additional nutrient information (fats, sugars...)
+                        //String modifiedTime = jsonObj.getString("ctime");
+                        TableRow row = new TableRow(view.getContext());
+
+                        //TODO:make the columns have weights like i did in MessagesFragment
+                        col1.setText("    " + jsonObj.getString("name") + "                  ");
+                        if (jsonObj.getString(parentHeader) == "null") {
+                            col2.setText("???" + "             ");
+                        } else {
+                            col2.setText(jsonObj.getString(parentHeader) + "             ");
+                        }
+                        col3.setText(jsonObj.getString("ctime"));
+
+                        row.addView(col1);
+                        row.addView(col2);
+                        row.addView(col3);
+                        mprogressTable.addView(row);
+                    }
+                } catch (JSONException e) {
+                    //something went wrong
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //TODO: insert some sort of an error response to the user
+            }
+
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/x-www-form-urlencoded");
+                headers.put("Api-Key", readID("userID"));
+                return headers;
+            }
+        };
+
+        queue.add(jor);
     }
 
 }

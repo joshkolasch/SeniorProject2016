@@ -1,7 +1,9 @@
 package com.example.iroh.speech2health;
 
 /**
- * Created by Josh on 11/13/2016.
+ * Updated by Josh on 11/13/2016.
+ *
+ * LoginActivity.java
  */
 import android.content.Context;
 import android.content.Intent;
@@ -66,10 +68,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         loginButton.setOnClickListener(this);
         registerButton.setOnClickListener(this);
         relativeLayout.setOnClickListener(this);
-        //globalVariable = GlobalVariablesClass.getInstance();
-
-        //GlobalVariablesClass globalVariable = (GlobalVariablesClass) getApplicationContext();
-        //globalVariable.setPatientFirstName("Josh");
     }
 
     public void attemptLogin() {
@@ -87,7 +85,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         HashMap<String, String> params = new HashMap<String, String> ();
         params.put("email", emailTextBox.getText().toString());
         params.put("password", passwordTextBox.getText().toString());
-
 
         JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, "http://159.203.204.9/api/v1/login", new JSONObject(params), new Response.Listener<JSONObject>(){
             @Override
@@ -167,7 +164,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onBackPressed(){}
 
     //Activities are NOT Fragments, they do not have getActivity() member functions
-    //that is why
+    //that is why 'this' is used
     public void hideSoftKeyboard(View v){
         InputMethodManager imm = (InputMethodManager)
                 this.getSystemService(Context.INPUT_METHOD_SERVICE);

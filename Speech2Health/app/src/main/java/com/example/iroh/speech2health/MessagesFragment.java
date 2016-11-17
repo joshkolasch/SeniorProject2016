@@ -39,11 +39,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
-//import info.androidhive.materialtabs.R;
+
 /**
- * Created by Josh on 9/30/2016.
+ * Updated by Josh on 9/30/2016.
  *
- * HomeFragment.java
+ * MessagesFragment.java
  */
 public class MessagesFragment extends Fragment implements View.OnClickListener{
 
@@ -57,6 +57,8 @@ public class MessagesFragment extends Fragment implements View.OnClickListener{
     private RelativeLayout relativeLayout;
     private RequestQueue queue;
     private TableLayout messageBoard;
+    String crimson = "#e60000";
+    String grey = "#808080";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,9 +100,7 @@ public class MessagesFragment extends Fragment implements View.OnClickListener{
                         JsonObjectRequest jorGetMessage = new JsonObjectRequest(Request.Method.GET, "http://159.203.204.9/api/v1/user/getMessages", null, new Response.Listener<JSONObject>(){
                             @Override
                             public void onResponse(JSONObject response){
-                                //String test = response.toString();
                                 try {
-                                    //JSONObject jsonObject = response.getJSONObject("messages");
                                     //TODO: Do stuff here
                                     String patient = response.getString("clientName");
                                     String previousName = " ";
@@ -127,10 +127,10 @@ public class MessagesFragment extends Fragment implements View.OnClickListener{
                                         messageText.setText(tempMessage);
                                         messageText.setTextColor(Color.BLACK);
                                         if(tempSender.equals(patient)){
-                                            messageText.setBackgroundColor(Color.CYAN);
+                                            messageText.setBackgroundColor(Color.parseColor(crimson));
                                         }
                                         else{
-                                            messageText.setBackgroundColor(Color.GREEN);
+                                            messageText.setBackgroundColor(Color.parseColor(grey));
                                         }
 
                                         TableRow senderRow = new TableRow(mView.getContext());
@@ -139,21 +139,26 @@ public class MessagesFragment extends Fragment implements View.OnClickListener{
                                             //1f will take up 1/total f's (in this case 3) and 2f will take 2/3 of the row space
                                             senderRow.addView(dummy, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
                                             senderRow.addView(senderText, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2f));
+                                            senderRow.setPadding(0,0,10,0);
                                         }
                                         else {
                                             senderRow.addView(senderText, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2f));
                                             senderRow.addView(dummy, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                                            senderRow.setPadding(10, 0, 0, 0);
                                         }
                                         TableRow messageRow = new TableRow(mView.getContext());
                                         if(tempSender.equals(patient)){
 
                                             messageRow.addView(dummy2, new TableRow.LayoutParams(1, TableRow.LayoutParams.WRAP_CONTENT, 1f));
                                             messageRow.addView(messageText, new TableRow.LayoutParams(1, TableRow.LayoutParams.WRAP_CONTENT, 2f));
+                                            messageRow.setPadding(0,0,10,0);
                                         }
                                         else {
                                             messageRow.addView(messageText, new TableRow.LayoutParams(1, TableRow.LayoutParams.WRAP_CONTENT, 2f));
                                             messageRow.addView(dummy2, new TableRow.LayoutParams(1, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                                            messageRow.setPadding(10,0,0,0);
                                         }
+
                                         messageBoard.addView(senderRow);
                                         messageBoard.addView(messageRow);
                                         previousName = tempSender;
@@ -237,11 +242,13 @@ public class MessagesFragment extends Fragment implements View.OnClickListener{
                         messageText.setText(tempMessage);
                         messageText.setTextColor(Color.BLACK);
                         if(tempSender.equals(patient)){
-                            messageText.setBackgroundColor(Color.CYAN);
+                            messageText.setBackgroundColor(Color.parseColor(crimson));
                         }
                         else{
-                            messageText.setBackgroundColor(Color.GREEN);
+                            messageText.setBackgroundColor(Color.parseColor(grey));
                         }
+
+                        messageText.setPadding(10,10,10,10);
 
                         TableRow senderRow = new TableRow(mView.getContext());
                         if(tempSender.equals(patient)){
@@ -249,20 +256,24 @@ public class MessagesFragment extends Fragment implements View.OnClickListener{
                             //1f will take up 1/total f's (in this case 3) and 2f will take 2/3 of the row space
                             senderRow.addView(dummy, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
                             senderRow.addView(senderText, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2f));
+                            senderRow.setPadding(0, 0, 10, 0);
                         }
                         else {
                             senderRow.addView(senderText, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2f));
                             senderRow.addView(dummy, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                            senderRow.setPadding(10,0,0,0);
                         }
                         TableRow messageRow = new TableRow(mView.getContext());
                         if(tempSender.equals(patient)){
 
                             messageRow.addView(dummy2, new TableRow.LayoutParams(1, TableRow.LayoutParams.WRAP_CONTENT, 1f));
                             messageRow.addView(messageText, new TableRow.LayoutParams(1, TableRow.LayoutParams.WRAP_CONTENT, 2f));
+                            messageRow.setPadding(0,0,10,0);
                         }
                         else {
                             messageRow.addView(messageText, new TableRow.LayoutParams(1, TableRow.LayoutParams.WRAP_CONTENT, 2f));
                             messageRow.addView(dummy2, new TableRow.LayoutParams(1, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                            messageRow.setPadding(10,0,0,0);
                         }
                         messageBoard.addView(senderRow);
                         messageBoard.addView(messageRow);
@@ -277,7 +288,8 @@ public class MessagesFragment extends Fragment implements View.OnClickListener{
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                String test2 = "error";
+                //TODO:Write error statements here like "Couldn't connect to server
+
             }
         }){
             @Override
@@ -303,7 +315,7 @@ public class MessagesFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    public void SendMessage(View v){
+    public void sendMessage(View v){
         //put in the volley call to the server here
         //if that doesn't work, just look at DiaryFragment and see how to do it inside the onCreateView function
 
@@ -322,6 +334,7 @@ public class MessagesFragment extends Fragment implements View.OnClickListener{
             InputStreamReader streamReader = new InputStreamReader(inputStream);
             BufferedReader buffReader = new BufferedReader(streamReader);
             StringBuffer stringBuffer = new StringBuffer();
+
             while ((Message=buffReader.readLine()) != null) {
                 stringBuffer.append(Message);
             }

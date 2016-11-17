@@ -21,6 +21,14 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+* Created by Josh 10/17/2016
+*
+* MainActivity.java
+*
+* This page controls the 4 fragment format once the user logs in
+*
+* */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private Toolbar toolbar;
@@ -51,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    //adds pages to MainActivity
+    //Turns a fragment into a swipeable Tab Layout structure
     private void setupViewPager(ViewPager viewPager){
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new HomeFragment(), "Home");
@@ -62,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-
+        //necessary for the onClick implementation
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter{
@@ -160,6 +170,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
     }
-
-
 }

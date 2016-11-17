@@ -31,7 +31,7 @@ import java.util.Map;
 
 
 /**
- * Created by Josh on 11/13/2016.
+ * Updated by Josh on 11/15/2016.
  */
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -81,8 +81,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         /*Attempt to hide the keyboard when clicking out of the EditText boxes*/
         RelativeLayout mRelLay = (RelativeLayout) findViewById(R.id.relativeLayoutRegister);
         mRelLay.setOnClickListener(this);
-
-
     }
 
     public void postData() {

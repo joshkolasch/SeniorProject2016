@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.iroh.speech2health.MainActivity">
+    tools:context="com.example.iroh.speech2health.MainActivity"
+    android:id="@+id/relativeLayoutProgressFragment">
 
     <!--
     <TextView
@@ -50,7 +51,7 @@
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/scrollView"
+        android:id="@+id/scrollViewProgressFragment"
         android:layout_marginTop="36dp"
         android:layout_below="@+id/foodTextViewProgressFragment"
         android:layout_alignParentLeft="true"
@@ -88,6 +89,18 @@
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_alignTop="@+id/refreshButtonProgressFragment"></RelativeLayout>
+        android:layout_alignTop="@+id/refreshButtonProgressFragment"
+        android:id="@+id/relativeLayout2ProgressFragment"></RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView4"
+        android:layout_alignParentTop="true"
+        android:width="50dp"
+        android:layout_toRightOf="@+id/foodTextViewProgressFragment"
+        android:layout_toEndOf="@+id/foodTextViewProgressFragment"
+        android:background="#FFFFFF"
+        android:textSize="16sp" />
 
 </RelativeLayout>

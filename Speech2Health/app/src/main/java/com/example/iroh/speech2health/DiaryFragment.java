@@ -69,6 +69,12 @@ import ai.api.model.AIResponse;
 import ai.api.model.Result;
 import ai.api.AIDataService;
 
+/**
+ * Updated by Josh on 11/17/2016.
+ *
+ * DiaryFragment.java
+ *
+ */
 public class DiaryFragment extends Fragment implements View.OnClickListener {
 
     private static final SimpleDateFormat sFilenameFormat = new SimpleDateFormat("yyyy-MM-dd-HH'.txt'", Locale.US);
@@ -210,8 +216,11 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
     //input is what the user spoke into the app == mET
     public void startVolley(final String input) {
 
+        //new AI token 1ee71d8fa6204f3fac22d14af7337a1f
+        //old AI token b421b100a49248f1bd410b6570c23e72
         //configuration for the API.ai account
-        final AIConfiguration config = new AIConfiguration("b421b100a49248f1bd410b6570c23e72",
+        //TODO:make sure this new AI token works
+        final AIConfiguration config = new AIConfiguration("1ee71d8fa6204f3fac22d14af7337a1f",
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
@@ -277,14 +286,17 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
 
                     if(finalSubmission != null && finalSubmission != ""){
 
+                        //String payload = result.getResolvedQuery();
                         HashMap<String, String> params = new HashMap<String, String>();
-                        params.put("input", finalSubmission);
-                        params.put("foodname", aiFoodName);
+                        params.put("resolvedQuery", finalSubmission);
+                        params.put("Foodnames", aiFoodName);
+                        params.put("Size", aiSize);
+                        params.put("Time", aiTime);
+                        params.put("Unit", " ");
 
                         JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, "http://159.203.204.9/api/v1/user/postFood", new JSONObject(params), new Response.Listener<JSONObject>(){
                             @Override
                             public void onResponse(JSONObject response){
-                                //String test = response.toString();
                                 String test = response.toString();
 
                                 try {
@@ -303,7 +315,6 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
                                 aiSize = "";
                                 finalSubmission = "";
                                 mET.setText("");
-
                             }
 
 
@@ -319,18 +330,14 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
                             Map<String, String> headers = new HashMap<String, String>();
                             headers.put("Content-Type", "application/x-www-form-urlencoded");
                             headers.put("Api-Key", readID("userID"));
-                            //headers.put("Authorization", "205");
                             return headers;
                         }
                         };
                         queue.add(jor);
                     }
-
                 }
             }
         }.execute(aiRequest);
-
-
     }
 
     public String readID(String file_name) {
@@ -365,11 +372,9 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-
     public void hideSoftKeyboard(View v){
         InputMethodManager imm = (InputMethodManager)
                 getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
-
 }

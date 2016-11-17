@@ -1,11 +1,13 @@
 package com.example.iroh.speech2health;
 
 /**
- * Created by Josh on 11/13/2016.
+ * Updated by Josh on 11/13/2016.
  *
- * For more information refer to the following tutorial link:
- * http://www.androidhive.info/2013/07/android-expandable-list-view-tutorial/
  * Author: Ravi Tamada
+ * Found on Androidhive
+ * For more information refer to the following tutorial link:
+ *
+ * http://www.androidhive.info/2013/07/android-expandable-list-view-tutorial/
  */
 import java.util.HashMap;
 import java.util.List;

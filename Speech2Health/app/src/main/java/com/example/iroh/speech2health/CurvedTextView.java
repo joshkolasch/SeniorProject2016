@@ -11,10 +11,10 @@ import android.widget.TextView;
 /**
  * CurvedTextView
  *
- * Found this from the user CardinalNow
+ * Author: CardinalNow
  * Logic used to create a Curved text variable around a progress circle
- https://github.com/CardinalNow/Android-CircleProgressIndicator
  *
+ * https://github.com/CardinalNow/Android-CircleProgressIndicator
  *         Jun 23, 2014 11:15:32 AM
  */
 public class CurvedTextView extends TextView {
