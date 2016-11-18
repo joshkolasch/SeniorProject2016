@@ -88,11 +88,56 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         mRelativeLayout.setOnClickListener(this);
 
+        updateProgressBar();
+
+        // Inflate the layout for this fragment
+        return mv;
+    }
+
+    public void hideSoftKeyboard(View v){
+        InputMethodManager imm = (InputMethodManager)
+                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
+
+    public void onClick(View v){
+        switch(v.getId()){
+            case R.id.relativeLayoutHomeFragment: hideSoftKeyboard(v);
+                break;
+        }
+    }
+
+    public String readID(String file_name) {
+        try {
+            String Message;
+            FileInputStream inputStream = getActivity().openFileInput(file_name);
+            InputStreamReader streamReader = new InputStreamReader(inputStream);
+            BufferedReader buffReader = new BufferedReader(streamReader);
+            StringBuffer stringBuffer = new StringBuffer();
+            while ((Message=buffReader.readLine()) != null) {
+                stringBuffer.append(Message);
+            }
+
+            return stringBuffer.toString();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public void updateProgressBar(){
+
         sdf = new SimpleDateFormat("yyyy-MM-dd");
         String startTime = sdf.format(new Date());
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("startTime", startTime);
         params.put("endTime", startTime);
+
+        final GlobalVariablesClass globalVariable = GlobalVariablesClass.getInstance();
 
         JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, "http://159.203.204.9/api/v1/user/getTodaysCals", new JSONObject(params), new Response.Listener<JSONObject>(){
             @Override
@@ -150,51 +195,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         }){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-            Map<String, String> headers = new HashMap<String, String>();
-            headers.put("Content-Type", "application/x-www-form-urlencoded");
-            headers.put("Api-Key", readID("userID"));
-            return headers;
-        }
+                Map<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/x-www-form-urlencoded");
+                headers.put("Api-Key", readID("userID"));
+                return headers;
+            }
         };
 
         queue.add(jor);
 
-        // Inflate the layout for this fragment
-        return mv;
-    }
-
-    public void hideSoftKeyboard(View v){
-        InputMethodManager imm = (InputMethodManager)
-                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-    }
-
-    public void onClick(View v){
-        switch(v.getId()){
-            case R.id.relativeLayoutHomeFragment: hideSoftKeyboard(v);
-                break;
-        }
-    }
-
-    public String readID(String file_name) {
-        try {
-            String Message;
-            FileInputStream inputStream = getActivity().openFileInput(file_name);
-            InputStreamReader streamReader = new InputStreamReader(inputStream);
-            BufferedReader buffReader = new BufferedReader(streamReader);
-            StringBuffer stringBuffer = new StringBuffer();
-            while ((Message=buffReader.readLine()) != null) {
-                stringBuffer.append(Message);
-            }
-
-            return stringBuffer.toString();
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 }

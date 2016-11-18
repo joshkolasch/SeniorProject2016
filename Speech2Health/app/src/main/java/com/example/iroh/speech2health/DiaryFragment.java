@@ -289,7 +289,7 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
                         //String payload = result.getResolvedQuery();
                         HashMap<String, String> params = new HashMap<String, String>();
                         params.put("resolvedQuery", finalSubmission);
-                        params.put("Foodnames", aiFoodName);
+                        params.put("FoodNames", aiFoodName);
                         params.put("Size", aiSize);
                         params.put("Time", aiTime);
                         params.put("Unit", " ");
@@ -300,10 +300,12 @@ public class DiaryFragment extends Fragment implements View.OnClickListener {
                                 String test = response.toString();
 
                                 try {
-                                    JSONObject jsonObject = response.getJSONObject("calories");
-                                    int calValue = jsonObject.getInt("calorie");
-                                    responseTextView.append("Great!\n" +
-                                            "Total Calories: " + calValue);
+                                    //JSONObject jsonObject = response.getJSONObject("calories");
+                                    //int calValue = jsonObject.getInt("calorie");
+                                    //responseTextView.append("Great!\n" +
+                                    //        "Total Calories: " + calValue);
+                                    int calValue = response.getInt("calories");
+                                    responseTextView.append("Total Calories: " + calValue);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }

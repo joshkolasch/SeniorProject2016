@@ -1,5 +1,6 @@
 package com.example.iroh.speech2health;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -57,7 +58,7 @@ public class ProgressFragment extends Fragment implements View.OnClickListener{
     }
 
     protected RequestQueue queue;
-    private Button refreshButton;
+    //private Button refreshButton;
     private TableLayout mprogressTable;
 
     //ExpandableListView stuff
@@ -67,11 +68,12 @@ public class ProgressFragment extends Fragment implements View.OnClickListener{
     HashMap<String, List<String>> listDataChild;
 
     private RelativeLayout relativeLayout;
-    private ScrollView scrollView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
     }
 
     @Override
@@ -82,7 +84,7 @@ public class ProgressFragment extends Fragment implements View.OnClickListener{
         final View mview = inflater.inflate(R.layout.fragment_progress, container, false);
 
         mprogressTable = (TableLayout) mview.findViewById(R.id.tableLayoutProgressFragment);
-        refreshButton = (Button) mview.findViewById(R.id.refreshButtonProgressFragment);
+        //refreshButton = (Button) mview.findViewById(R.id.refreshButtonProgressFragment);
 
         // get the listview
         expListView = (ExpandableListView) mview.findViewById(R.id.expandableListViewProgressFragment);
@@ -97,13 +99,7 @@ public class ProgressFragment extends Fragment implements View.OnClickListener{
         //display list on top of scrollview
         expListView.bringToFront();
 
-        /*scrollView = (ScrollView) mview.findViewById(R.id.scrollViewProgressFragment);
-        scrollView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                expListView.collapseGroup(0);
-            }
-        });*/
+
 
         //TODO: make the list collapse when anything other than itself is touched
         mprogressTable.setOnClickListener(new View.OnClickListener() {
@@ -153,17 +149,6 @@ public class ProgressFragment extends Fragment implements View.OnClickListener{
         });
 
         loadProgress(mview);
-
-        //expListView.bringChildToFront();
-
-        refreshButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadProgress(mview);
-
-
-            }
-        });
 
         return mview;
     }
@@ -248,7 +233,7 @@ public class ProgressFragment extends Fragment implements View.OnClickListener{
                         TextView col2 = new TextView(view.getContext());
                         TextView col3 = new TextView(view.getContext());
 
-                        //TODO:Modify Progress page to display calories or proteins or other additional nutrient information (fats, sugars...)
+
                         //String modifiedTime = jsonObj.getString("ctime");
                         TableRow row = new TableRow(view.getContext());
 
@@ -261,9 +246,13 @@ public class ProgressFragment extends Fragment implements View.OnClickListener{
                         }
                         col3.setText(jsonObj.getString("ctime"));
 
+                        //TODO:Highlight rows that include things eaten today
                         row.addView(col1);
                         row.addView(col2);
                         row.addView(col3);
+                        //row.setBackgroundColor(Color.YELLOW);
+                        //row.setPadding(20, 20, 20, 20);
+
                         mprogressTable.addView(row);
                     }
                 } catch (JSONException e) {
